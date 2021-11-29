@@ -2,43 +2,35 @@ package com.akansha.showtime
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
-import com.akansha.showtime.model.Trending
-import com.akansha.showtime.network.*
-import retrofit2.Call
-import retrofit2.Response
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: TrendingAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         setContentView(R.layout.activity_main)
-        loadTrending()
-    }
 
-    private fun loadTrending() {
+        val viewModel: TrendingViewModel by viewModels()
+        recyclerView = findViewById(R.id.trending_recycler_view)
 
-        RetrofitService.retrofitService.getTrending()
-            .enqueue(object : retrofit2.Callback<Trending> {
-                override fun onResponse(
-                    call: Call<Trending>,
-                    response: Response<Trending>
-                ) {
-                    if (response.isSuccessful) {
-                        val data = response.body()
-                    } else {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Failed to retrieve items",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<Trending>, t: Throwable) {
-                    Toast.makeText(this@MainActivity, "Failure: " + t.message, Toast.LENGTH_SHORT)
-                        .show()
-                }
-            })
+        viewModel.getTrendingMovies().observe(this, Observer {
+            adapter = TrendingAdapter(it.results)
+            recyclerView.adapter = adapter
+            recyclerView.layoutManager = LinearLayoutManager(
+                this,
+                LinearLayoutManager.HORIZONTAL, false
+            )
+        })
     }
 }
 
