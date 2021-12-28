@@ -19,7 +19,7 @@
         android:id="@+id/trending_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:orientation="horizontal" />
+        android:orientation="horizontal"
+        android:paddingTop="10dp" />
 
 </LinearLayout>

@@ -8,11 +8,11 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-
 class MainActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: TrendingAdapter
+    private var startSnapHelper = StartSnapHelper()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +26,8 @@ class MainActivity : AppCompatActivity() {
         viewModel.getTrendingMovies().observe(this, Observer {
             adapter = TrendingAdapter(it.results)
             recyclerView.adapter = adapter
+            startSnapHelper.attachToRecyclerView(recyclerView)
+            recyclerView.addItemDecoration(ItemDecorator(10, 0))
             recyclerView.layoutManager = LinearLayoutManager(
                 this,
                 LinearLayoutManager.HORIZONTAL, false
